@@ -17,9 +17,9 @@ import (
 type orchestrator2 struct {
 	user_pb.UnimplementedOrchestrator2ServiceServer
 
-	orc2_server *grpc.Server
-	user_client user_pb.MockUserDataServiceClient
-	shutdown    chan string
+	orc2Server *grpc.Server
+	userClient user_pb.MockUserDataServiceClient
+	shutdown   chan string
 }
 
 func (orc2 *orchestrator2) GetUser(ctx context.Context, user *user_pb.User) (*user_pb.User, error) {
@@ -30,7 +30,7 @@ func (orc2 *orchestrator2) GetUser(ctx context.Context, user *user_pb.User) (*us
 	var err error
 
 	// Call GetMockUserData RPC
-	response, err := orc2.user_client.GetMockUserData(ctx, &user_pb.UserName{Name: user.Name})
+	response, err := orc2.userClient.GetMockUserData(ctx, &user_pb.UserName{Name: user.Name})
 	if err != nil {
 		log.Printf("Got error in GetUser: %v", err)
 	} else {
@@ -50,17 +50,17 @@ func (orc2 *orchestrator2) startGRPCServer(ctx context.Context, listener net.Lis
 
 		// Stop the server from accepting new connections but
 		// allow pending RPCs to complete.
-		orc2.orc2_server.GracefulStop()
+		orc2.orc2Server.GracefulStop()
 		orc2.shutdown <- "gRPC server shutdown successful."
 
 	}()
 
 	// Start the server
 	log.Printf("\nStarting gRPC server for Orchestrator 2 at port %v...\n", constants.ORC2_ADDR)
-	err := orc2.orc2_server.Serve(listener)
+	err := orc2.orc2Server.Serve(listener)
 
 	if err != nil {
-		log.Fatalf("Error occured in Orchestrator 2 gRPC server Serve(): %v", err)
+		log.Fatalf("Error occurred in Orchestrator 2 gRPC server Serve(): %v", err)
 	}
 }
 
@@ -68,15 +68,15 @@ func (orc2 *orchestrator2) startGRPCServer(ctx context.Context, listener net.Lis
 func (orc2 *orchestrator2) listenForShutdown(cancel context.CancelFunc) {
 
 	// Capture termination signals
-	os_sigs := make(chan os.Signal, 1)                      // Listen for OS signals, with buffer size 1
-	signal.Notify(os_sigs, syscall.SIGTERM, syscall.SIGINT) // SIGKILL and SIGSTOP cannot be caught by a program
+	osSigs := make(chan os.Signal, 1)                      // Listen for OS signals, with buffer size 1
+	signal.Notify(osSigs, syscall.SIGTERM, syscall.SIGINT) // SIGKILL and SIGSTOP cannot be caught by a program
 
-	rcvd_sig := <-os_sigs
+	rcvdSig := <-osSigs
 
-	log.Printf("\n\nTermination signal received: %v\n", rcvd_sig)
+	log.Printf("\n\nTermination signal received: %v\n", rcvdSig)
 
-	signal.Stop(os_sigs) // Stop listening for signals
-	close(os_sigs)
+	signal.Stop(osSigs) // Stop listening for signals
+	close(osSigs)
 
 	cancel() // Here this will only signal ctx.Done() in StartGRPCServer's goroutine
 
@@ -104,10 +104,10 @@ func main() {
 	orc2 := &orchestrator2{
 		shutdown: make(chan string),
 	}
-	orc2_server := grpc.NewServer()
-	orc2.orc2_server = orc2_server
+	orc2Server := grpc.NewServer()
+	orc2.orc2Server = orc2Server
 
-	user_pb.RegisterOrchestrator2ServiceServer(orc2_server, orc2)
+	user_pb.RegisterOrchestrator2ServiceServer(orc2Server, orc2)
 
 	conn, err := grpc.Dial(constants.DUMMY_DATA_SERV_ADDR, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
@@ -116,8 +116,8 @@ func main() {
 	defer conn.Close()
 
 	// Obtain the gRPC client stub for the service
-	orc2_client := user_pb.NewMockUserDataServiceClient(conn)
-	orc2.user_client = orc2_client
+	orc2Client := user_pb.NewMockUserDataServiceClient(conn)
+	orc2.userClient = orc2Client
 
 	ctx, cancel := context.WithCancel(context.Background())
 

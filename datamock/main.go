@@ -15,7 +15,7 @@ type mockUserDataServer struct {
 	user_pb.UnimplementedMockUserDataServiceServer
 }
 
-func (mock_data_server *mockUserDataServer) GetMockUserData(ctx context.Context, name *user_pb.UserName) (*user_pb.User, error) {
+func (mockDataServer *mockUserDataServer) GetMockUserData(ctx context.Context, name *user_pb.UserName) (*user_pb.User, error) {
 
 	var err error = nil
 	var user *user_pb.User
@@ -41,14 +41,14 @@ func main() {
 		log.Fatalf("Cannot bind server to tcp port %v,\nError: %v", constants.DUMMY_DATA_SERV_ADDR, err)
 	}
 
-	mock_data_server := grpc.NewServer()
-	user_pb.RegisterMockUserDataServiceServer(mock_data_server, &mockUserDataServer{})
+	mockDataServer := grpc.NewServer()
+	user_pb.RegisterMockUserDataServiceServer(mockDataServer, &mockUserDataServer{})
 
 	// Start the server
 	log.Printf("\nStarting mock user data gRPC service at port %v...\n", constants.DUMMY_DATA_SERV_ADDR)
-	err = mock_data_server.Serve(listener)
+	err = mockDataServer.Serve(listener)
 
 	if err != nil {
-		log.Fatalf("Error occured in mock user data gRPC server Serve(): %v", err)
+		log.Fatalf("Error occurred in mock user data gRPC server Serve(): %v", err)
 	}
 }
