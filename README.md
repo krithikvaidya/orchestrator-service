@@ -1,5 +1,6 @@
 # Orchestrator Service
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/krithikvaidya/orchestrator-service)](https://goreportcard.com/report/github.com/krithikvaidya/orchestrator-service)
 
 ## Instructions to run  
 
