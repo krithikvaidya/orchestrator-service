@@ -100,6 +100,92 @@ var Orchestrator1Service_ServiceDesc = grpc.ServiceDesc{
 	Metadata: "user.proto",
 }
 
+// Orchestrator2ServiceClient is the client API for Orchestrator2Service service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type Orchestrator2ServiceClient interface {
+	GetUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error)
+}
+
+type orchestrator2ServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewOrchestrator2ServiceClient(cc grpc.ClientConnInterface) Orchestrator2ServiceClient {
+	return &orchestrator2ServiceClient{cc}
+}
+
+func (c *orchestrator2ServiceClient) GetUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error) {
+	out := new(User)
+	err := c.cc.Invoke(ctx, "/user.Orchestrator2Service/GetUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// Orchestrator2ServiceServer is the server API for Orchestrator2Service service.
+// All implementations must embed UnimplementedOrchestrator2ServiceServer
+// for forward compatibility
+type Orchestrator2ServiceServer interface {
+	GetUser(context.Context, *User) (*User, error)
+	mustEmbedUnimplementedOrchestrator2ServiceServer()
+}
+
+// UnimplementedOrchestrator2ServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedOrchestrator2ServiceServer struct {
+}
+
+func (UnimplementedOrchestrator2ServiceServer) GetUser(context.Context, *User) (*User, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
+}
+func (UnimplementedOrchestrator2ServiceServer) mustEmbedUnimplementedOrchestrator2ServiceServer() {}
+
+// UnsafeOrchestrator2ServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to Orchestrator2ServiceServer will
+// result in compilation errors.
+type UnsafeOrchestrator2ServiceServer interface {
+	mustEmbedUnimplementedOrchestrator2ServiceServer()
+}
+
+func RegisterOrchestrator2ServiceServer(s grpc.ServiceRegistrar, srv Orchestrator2ServiceServer) {
+	s.RegisterService(&Orchestrator2Service_ServiceDesc, srv)
+}
+
+func _Orchestrator2Service_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(User)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(Orchestrator2ServiceServer).GetUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.Orchestrator2Service/GetUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(Orchestrator2ServiceServer).GetUser(ctx, req.(*User))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// Orchestrator2Service_ServiceDesc is the grpc.ServiceDesc for Orchestrator2Service service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var Orchestrator2Service_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "user.Orchestrator2Service",
+	HandlerType: (*Orchestrator2ServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetUser",
+			Handler:    _Orchestrator2Service_GetUser_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "user.proto",
+}
+
 // MockUserDataServiceClient is the client API for MockUserDataService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.

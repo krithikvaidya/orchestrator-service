@@ -2,12 +2,25 @@ package main
 
 import (
 	"context"
+	"flag"
 	"log"
 
 	constants "github.com/krithikvaidya/orchestrator-service/constants"
 	user_pb "github.com/krithikvaidya/orchestrator-service/user"
 	"google.golang.org/grpc"
 )
+
+var name string
+
+func init() {
+
+	// Command line parameters
+	flag.StringVar(&name, "n", "krithik", "username (default=krithik)")
+	flag.Parse()
+
+	log.SetFlags(0) // Turn off timestamps in log output.
+
+}
 
 func main() {
 
@@ -30,7 +43,7 @@ func main() {
 	defer cancel()
 
 	// Call GetUserByName RPC
-	response, err := c.GetUserByName(ctx, &user_pb.UserName{Name: "Krithik"})
+	response, err := c.GetUserByName(ctx, &user_pb.UserName{Name: name})
 	if err != nil {
 		log.Fatalf("Got error:\n%v", err)
 	}

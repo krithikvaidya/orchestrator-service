@@ -18,6 +18,10 @@ service Orchestrator1Service {
     rpc GetUserByName(UserName) returns (User) {}
 }
 
+service Orchestrator2Service {
+    rpc GetUser(User) returns (User) {}
+}
+
 service MockUserDataService {
     rpc GetMockUserData(UserName) returns (User) {}
 }

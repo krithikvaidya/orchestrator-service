@@ -7,7 +7,7 @@
 - The *constants* folder contains some constants used by our program
 - The *user* folder contains the `user.proto` file (protobufs and RPC definitions), along with the generated *.pb.go* files
 
-## Output
+### Screenshots of Output
 
 - Server:
 ![](screenshots/part2_server.png)
@@ -19,3 +19,19 @@
 
 - The .proto definition in *user/user.proto* has been updated with the MockUserDataService.
 - The implementation of the service is in *datamock/main.go*
+
+## Part 4
+
+- Used the same namings as the ones given for the two orchestrators (orchestrator1 and orchestrator2)
+- The .proto definition in `user/user.proto` has been updated with the *Orchestrator2Service* 
+- The `logic` folder has been created, with two folders `orchestrator1` and `orchestrator2` containing the logic and RPC server implementation for each orchestrator.
+- The contents of `main.go` in the root folder (which was created in Part 2 to implement the gRPC server for GetUserByName) has been moved to `logic/orchestrator1/orc_1.go`, along with modifications.
+- To ensure graceful shutdown of the gRPC server, a *shutdown* channel and context *cancel()* have been used, along with capturing program stop signals (SIGTERM, SIGINT).
+
+### Screenshots of Output
+
+- Invoking client with name "krithik":
+![](screenshots/part4_krithik.png)
+
+- Invoking client with name "abc":
+![](screenshots/part4_abc.png)
