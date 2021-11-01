@@ -14,3 +14,8 @@
 
 - Client
 ![](screenshots/part2_client.png)
+
+## Part 3
+
+- The .proto definition in *user/user.proto* has been updated with the MockUserDataService.
+- The implementation of the service is in *datamock/main.go*

@@ -97,5 +97,91 @@ var Orchestrator1Service_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "user/user.proto",
+	Metadata: "user.proto",
+}
+
+// MockUserDataServiceClient is the client API for MockUserDataService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type MockUserDataServiceClient interface {
+	GetMockUserData(ctx context.Context, in *UserName, opts ...grpc.CallOption) (*User, error)
+}
+
+type mockUserDataServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewMockUserDataServiceClient(cc grpc.ClientConnInterface) MockUserDataServiceClient {
+	return &mockUserDataServiceClient{cc}
+}
+
+func (c *mockUserDataServiceClient) GetMockUserData(ctx context.Context, in *UserName, opts ...grpc.CallOption) (*User, error) {
+	out := new(User)
+	err := c.cc.Invoke(ctx, "/user.MockUserDataService/GetMockUserData", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// MockUserDataServiceServer is the server API for MockUserDataService service.
+// All implementations must embed UnimplementedMockUserDataServiceServer
+// for forward compatibility
+type MockUserDataServiceServer interface {
+	GetMockUserData(context.Context, *UserName) (*User, error)
+	mustEmbedUnimplementedMockUserDataServiceServer()
+}
+
+// UnimplementedMockUserDataServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedMockUserDataServiceServer struct {
+}
+
+func (UnimplementedMockUserDataServiceServer) GetMockUserData(context.Context, *UserName) (*User, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMockUserData not implemented")
+}
+func (UnimplementedMockUserDataServiceServer) mustEmbedUnimplementedMockUserDataServiceServer() {}
+
+// UnsafeMockUserDataServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to MockUserDataServiceServer will
+// result in compilation errors.
+type UnsafeMockUserDataServiceServer interface {
+	mustEmbedUnimplementedMockUserDataServiceServer()
+}
+
+func RegisterMockUserDataServiceServer(s grpc.ServiceRegistrar, srv MockUserDataServiceServer) {
+	s.RegisterService(&MockUserDataService_ServiceDesc, srv)
+}
+
+func _MockUserDataService_GetMockUserData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserName)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MockUserDataServiceServer).GetMockUserData(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.MockUserDataService/GetMockUserData",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MockUserDataServiceServer).GetMockUserData(ctx, req.(*UserName))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// MockUserDataService_ServiceDesc is the grpc.ServiceDesc for MockUserDataService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var MockUserDataService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "user.MockUserDataService",
+	HandlerType: (*MockUserDataServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetMockUserData",
+			Handler:    _MockUserDataService_GetMockUserData_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "user.proto",
 }
