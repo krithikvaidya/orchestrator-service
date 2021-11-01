@@ -2,6 +2,8 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/krithikvaidya/orchestrator-service)](https://goreportcard.com/report/github.com/krithikvaidya/orchestrator-service)
 
+This repository implements an orchestrator service in Golang, according to the instructions mentioned [here](https://github.com/mage-io/documentation/blob/main/exercises/orchestrator.md).
+
 ## Instructions to run  
 
 - Clone the repository
